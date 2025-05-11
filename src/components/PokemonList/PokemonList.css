@@ -21,3 +21,17 @@
     padding-bottom: 0.5rem;
     margin-left: 1rem;
 }
+
+
+/* Media query for friendly layout (example: smaller screens) */
+@media (max-width: 768px) {
+    .pokemon-wrapper {
+        flex-direction: column; /* Stack Pokemon on smaller screens */
+        align-items: center; /* Center them horizontally */
+    }
+
+    .pokemon-item {
+        margin-bottom: 1rem; /* Add some space between stacked items */
+        width: 80%; /* Make each item take up more width */
+    }
+}

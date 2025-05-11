@@ -1,9 +1,18 @@
-
 .search-wrapper {
     margin: 0 auto;
 }
+
 #pokemon-name-search {
     margin-top: 2rem;
     width: 600px;
     padding: 1.5rem;
+}
+
+/* Media query for friendly search layout */
+@media (max-width: 768px) {
+    #pokemon-name-search {
+        width: 90%; /* Make the search bar wider on smaller screens */
+        padding: 1rem; /* Reduce padding for better fit */
+        margin-top: 1.5rem; /* Adjust top margin if needed */
+    }
 }
