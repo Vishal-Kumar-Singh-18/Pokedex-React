@@ -1,33 +1,56 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import usePokemonList from "./usePokemonList";
 
-function usePokemonDetails (id) {
-    
-    const [pokemon, setPokemon] = useState({});
-    async function downloadPokemons () {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        const pokemonOfSametypes = await axios.get(`https://pokeapi.co/api/v2/type/${response.data.types ? response.data.types[0].type.name : ''}`);
+function usePokemonDetails(id, pokemonName) {
+  const [pokemon, setPokemon] = useState({});
+  async function downloadPokemon() {
+    try {
+      let response;
+      if (pokemonName) {
+        response = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
+        );
+      } else {
+        response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      }
+      const pokemonOfSameTypes = await axios.get(
+        `https://pokeapi.co/api/v2/type/${
+          response.data.types ? response.data.types[0].type.name : ""
+        }`
+      );
+      // Limit similarPokemons to 5
+      const limitedSimilarPokemons = pokemonOfSameTypes.data.pokemon
+        .slice(0, 5)
+        .map((p) => ({
+          name: p.pokemon.name,
+          url: p.pokemon.url,
+        }));
 
-        setPokemon ({
-            name: response.data.name,
-            image: response.data.sprites.other.dream_world.front_default,
-            weight: response.data.weight,
-            height: response.data.height,
-            types: response.data.types.map((t) => t.type.name),
-            similarPokemons: pokemonOfSametypes.data.pokemon
-        });
+      console.log(limitedSimilarPokemons);
 
-        setPokemonListState({...pokemonListState, type: response.data.types ? response.data.types[0].type.name : '' })
+      setPokemon({
+        name: response.data.name,
+        image: response.data.sprites.other.dream_world.front_default,
+        weight: response.data.weight,
+        height: response.data.height,
+        types: response.data.types.map((t) => t.type.name),
+        similarPokemons: limitedSimilarPokemons,
+      });
+      setPokemonListState({
+        ...pokemonListState,
+        type: response.data.types ? response.data.types[0].type.name : "",
+      });
+    } catch (error) {
+      console.log("something went");
     }
-    
-    const [pokemonListState, setPokemonListState] = usePokemonList();
-    
-    useEffect(() => {
-        downloadPokemons();
-    }, []);
+  }
+  const [pokemonListState, setPokemonListState] = useState({});
 
-    return [pokemon];
+  useEffect(() => {
+    downloadPokemon();
+  }, []);
+
+  return [pokemon];
 }
 
 export default usePokemonDetails;
